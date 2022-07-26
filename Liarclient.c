@@ -8,28 +8,31 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include "GameMsg.h"
 
 #define MAXLINE 1000
 #define NAME_LEN 20
 
-char *mafiavictory = "★★★★마피아의 승리입니다★★★★\n";
-char *ctzvictory = "★★★★시민의 승리입니다★★★★\n";
-char *EXIT_STRING = "exit";
 
 int tcp_connect(int af, char *servip, unsigned short port);
-void errquit(char *mesg) { perror(mesg); exit(1); }
+
+void errquit(char *mesg) {
+	 perror(mesg);
+	 exit(1);
+	 }
+
 int main(int argc, char *argv[]) {
 	char bufall[MAXLINE + NAME_LEN], *bufmsg;
 	int maxfdp1, s, namelen;
 	fd_set read_fds;
-	if (argc != 4) {
-		printf("사용법 : %s server_ip port name\n", argv[0]);
+	if (argc != 3) {
+		printf("사용법 : %s server_ip name\n", argv[0]);
 		exit(0);
 	}
-	sprintf(bufall, "", argv[3]);
+	sprintf(bufall, "", argv[2]);
 	namelen = strlen(bufall);
 	bufmsg = bufall + namelen;
-	s = tcp_connect(AF_INET, argv[1], atoi(argv[2]));
+	s = tcp_connect(AF_INET, argv[1], SERV_PORT);
 	if (s == -1)
 		errquit("tcp_connect fail");
 	puts("서버에 접속되었습니다.");
