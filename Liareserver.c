@@ -18,7 +18,8 @@ void removeClient(int s);
 int tcp_listen(int host, int port, int backlog);
 int set_nonblock(int sockfd);
 int is_nonblock(int sockfd);
-void game_start();
+void recvdmsg();
+int maxfd =0;
 
 void errquit(char *mesg)
 {
@@ -63,8 +64,8 @@ int main(int argc, char *argv[]) {
 			sprintf(welcome, "%d번 사용자입니다.", num_chat);
 			send(clisock_list[num_chat - 1], welcome, strlen(welcome), 0);
 		}
-		if(num_chat == 5)
-				game_start();
+		if(num_chat == 2)
+				
 			
 		for (i = 0; i < num_chat; i++) {
 			errno = 0;
@@ -88,55 +89,39 @@ int main(int argc, char *argv[]) {
 	return 0;
 } //main
 
-void game_start()
-{
-	char dieuser[5];
-	int turn = 0;
-	int gturn = 0;  //게임 턴 횟수
-	int indexx = 0;
-	char target[MAXLINE + 1];
-	int mafia, police;
-	int k, pflag = 0;
-	char votemsg[MAXLINE + 1];
-	char vvote[MAXLINE + 1];
-	char police_nt[MAXLINE + 1];
-	int numctz = 3;   //시민의 수
-	int vtlimit[2] = { 3, 2 };
 
-	printf("\n게임을 시작하려면 start를 입력해주세요\n");
-	while (fgets(buf, sizeof(buf), stdin) != NULL) {      //사회자(서버)가 start를 입력하면 시작
-		if (strstr(buf, start_command1) != NULL) {   //buf가 start이면
-			srand(time(NULL));
-			mafia = rand() % 5;   //0에서 4까지
-			police = (mafia + 1) % 5;
-			for (k = 0; k < num_chat; k++)
-				send(clisock_list[k], start_command2, strlen(start_command2), 0);
-			while (1) {
-				printf("\n낮이 밝았습니다.\n");  //여기서부터 반복
-				for (k = 0; k < num_chat; k++)
-				{
-					send(clisock_list[k], morning, strlen(morning), 0);
-					if (k == mafia)    //마피아에게
-						send(clisock_list[k], mfmsg, strlen(mfmsg), 0);
-					if (k == police && pflag == 0)   //경찰에게
-						send(clisock_list[k], plcmsg, strlen(plcmsg), 0);
-					if (k != mafia && k != police)   //일반시민들에게
-						send(clisock_list[k], ctzmsg, strlen(ctzmsg), 0);
-				}
-				for (i = 0; i < num_chat; i++)
-					nvote[i] = 0;
-				for (k = 0; k < num_chat; k++) {
-					send(clisock_list[k], vote, strlen(vote), 0);
+void recdvmsg()
+{
+	char readbuf;
+	int abc=0;
+
+	read(maxfd,&readbuf,strlen(readbuf));
+	if(strstr(readbuf,"abc"))
+	{
+		abc++;
+		if(abc==5)
+		{
+			//abc();
+		}
+		else
+			write(maxfd,noabc,strlen(noabc));
+	}
+	else
+		write(maxfd,&readbuf,strlen(readbuf));
+}
+	
+
+		/*		//투표시작
+					for (k = 0; k < num_chat; k++) {
+					send(clisock_list[k], vote, strlen(vote), 0); // 투표하라는 명령
 					if (gturn != 0)
 						send(clisock_list[k], votenotice, strlen(votenotice), 0);   //죽은 사용자 알림
+						
 				}
-				for (i = 0; i < turn; i++) {
-					sprintf(dieuser, "* %d 번\n", userid[i]);
-					for (k = 0; k < num_chat; k++)
-						send(clisock_list[k], dieuser, strlen(dieuser), 0);
-				}
+							for (i = 0; i < num_chat; i++)
+					nvote[i] = 0;
 				while (1) {
-
+						send(clisock_list[k], dieuser, strlen(dieuser), 0);
 					int flag = 0;
 					max = 0;
 
@@ -342,6 +327,7 @@ void game_start()
 		}  //게임을 시작합니다 if
 	}// start
 }
+*/
 
 void addClient(int s, struct sockaddr_in *newcliaddr) {
 	char buf[20];

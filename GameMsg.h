@@ -26,6 +26,8 @@ char *start_command2 = "\nGAME START\n";
 char *order = "your turn. choice number. ";
 char *wait_so = "wait..\n";
 char *interrupt = "비정상적인 종료입니다. 게임을 다시 시작하세요.\n";
+char *freetime = "투표를 시작하실려면 투표라고 입력해주세요";
+char *noabc ="아직 투표인원수가 충족되지 않았습니다\n";
 
 
 /* ingame msg */
